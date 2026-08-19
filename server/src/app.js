@@ -17,7 +17,7 @@ const app = express();
 app.use(cors({
   origin: ['http://localhost:5173', 
           'http://localhost:5174',
-          'https://ai-resume-builder-flame-kappa.vercel.app'
+          'https://ai-resume-builder-platform.vercel.app'
         ],
   credentials: true, // 🔥 important for auth cookies/JWT
 }));
