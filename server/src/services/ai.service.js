@@ -72,6 +72,23 @@ export const getAtsScore = async (data) => {
   const result = await generateContent(prompt);
   const parsed = parseJsonResponse(result);
 
+  let skillGapResults = {};
+  try {
+    skillGapResults = await detectSkillGaps({
+      skills: sections.skills || {},
+      jobDescription,
+    });
+  } catch (error) {
+    skillGapResults = {};
+  }
+
+  parsed.presentKeywords = Array.isArray(parsed.presentKeywords)
+    ? parsed.presentKeywords
+    : (keywordResults.matched || []);
+  parsed.skillGaps = Array.isArray(parsed.skillGaps)
+    ? parsed.skillGaps
+    : (skillGapResults.missingSkills || []);
+
   if (parsed.breakdown) {
     const breakdown = parsed.breakdown;
     for (const metric of ['keywordMatch', 'formatting', 'sectionCompleteness', 'quantification', 'actionVerbs', 'length', 'contactInfo']) {

@@ -96,6 +96,8 @@ const resumeSchema = new mongoose.Schema(
       overall: { type: Number, default: 0 },
       breakdown: { type: atsBreakdownSchema, default: () => ({}) },
       missingKeywords: [{ type: String }],
+      presentKeywords: [{ type: String }],
+      skillGaps: [{ type: String }],
       suggestions: [{ type: String }],
     },
     isActive: {

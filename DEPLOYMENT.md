@@ -47,7 +47,7 @@
 
 6. Click **"Deploy Web Service"**
 7. Wait for deployment to complete (2-3 minutes)
-8. Copy the backend URL (e.g., `https://ai-resume-builder-server.onrender.com`)
+8. Copy the backend URL: `https://ai-resume-builder-gclv.onrender.com`
 
 ## Step 3: Deploy Frontend (Vercel)
 
@@ -61,7 +61,7 @@
    - **Output Directory**: `dist`
 
 5. **Add Environment Variables**:
-   - `VITE_API_URL`: Your Render backend URL (e.g., `https://ai-resume-builder-server.onrender.com`)
+   - `VITE_API_URL`: `https://ai-resume-builder-gclv.onrender.com/api`
 
 6. Click **"Deploy"**
 7. Wait for deployment to complete (1-2 minutes)
