@@ -73,7 +73,7 @@ function LoginPage() {
             onError={() => toast.error('Google login failed')}
             theme="outline"
             size="large"
-            width="100%"
+            width="350"
             text={isRegister ? 'signup_with' : 'signin_with'}
           />
         </div>

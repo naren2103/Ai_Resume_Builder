@@ -15,7 +15,19 @@ const app = express();
 
 // Enable CORS
 app.use(cors({
-  origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5174'],
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:5173', 
+      'http://localhost:5174',
+      'https://ai-resume-builder-platform.vercel.app',
+      'https://ai-resume-builder-gclv.onrender.com'
+    ];
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true, // 🔥 important for auth cookies/JWT
 }));
 
