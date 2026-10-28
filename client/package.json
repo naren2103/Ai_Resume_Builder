@@ -8,7 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@esbuild/win32-x64": "0.28.2",
     "@react-oauth/google": "^0.12.1",
     "@react-pdf/renderer": "^4.3.0",
     "base64-js": "^1.5.1",
