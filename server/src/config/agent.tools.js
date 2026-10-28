@@ -17,7 +17,7 @@ export const createAgentTools = (context, aiService) => {
       sectionData: z
         .any()
         .describe(
-          'The structured data for the section. For experience: array of {company, role, startDate, endDate, current, bullets}. For education: array of {institution, degree, field, startDate, endDate, gpa}. For skills: {technical: [], soft: [], languages: []}. For personalInfo: {fullName, email, phone, location, linkedIn, portfolio}. For summary: pass as {text: "summary string"}.'
+          'The structured data for the section. For experience: array of {company, role, startDate, endDate, current, bullets}. For education: array of {institution, degree, field, startDate, endDate, gpa}. For skills: {technical: [], soft: [], languages: []}. For personalInfo: {fullName, email, phone, location, linkedIn, github, portfolio}. For summary: pass as {text: "summary string"}.'
         ),
     }),
     func: async ({ sectionName, sectionData }) => {

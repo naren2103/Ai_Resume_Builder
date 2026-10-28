@@ -2,18 +2,20 @@
 // CreativeTemplate.jsx - Creative Bold Resume
 // ============================================
 
-import { HiEnvelope, HiPhone, HiMapPin, HiLink, HiGlobeAlt } from 'react-icons/hi2';
+import { HiEnvelope, HiPhone, HiMapPin, HiLink, HiCodeBracket, HiGlobeAlt } from 'react-icons/hi2';
 
 function CreativeTemplate({ sections, colors }) {
   const { personalInfo, summary, experience, education, skills, projects, certifications } = sections;
 
   const s = {
     page: { fontFamily: "'Inter', sans-serif", color: colors.text, padding: '40px 44px', lineHeight: 1.5 },
-    name: { fontSize: '30px', fontWeight: 800, letterSpacing: '-0.5px', margin: 0 },
-    gradientBar: { height: '4px', width: '100px', borderRadius: '4px', marginTop: '6px', background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})` },
-    contactRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '14px', marginTop: '12px' },
-    contactItem: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#777' },
-    contactIcon: { fontSize: '13px', color: colors.accent },
+    name: { fontSize: '30px', fontWeight: 800, letterSpacing: '-0.5px', margin: 0, textAlign: 'center' },
+    gradientBar: { height: '4px', width: '100px', borderRadius: '4px', margin: '6px auto 10px', background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})` },
+    header: { textAlign: 'center', marginBottom: '20px' },
+    contactLine: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: '4px', fontSize: '12px', color: '#666', wordBreak: 'break-word' },
+    contactItem: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' },
+    contactIcon: { fontSize: '13px', color: colors.accent, flexShrink: 0 },
+    divider: { color: '#cbd5e1', margin: '0 8px', userSelect: 'none' },
     sectionTitle: { fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: colors.primary, paddingLeft: '14px', borderLeft: `4px solid ${colors.accent}`, marginBottom: '12px', marginTop: 0 },
     summaryCard: { borderRadius: '10px', padding: '16px 18px', backgroundColor: colors.light, fontSize: '13px', lineHeight: 1.7, color: '#444' },
     timelineDot: { width: '10px', height: '10px', borderRadius: '50%', backgroundColor: colors.accent, flexShrink: 0, marginTop: '4px' },
@@ -34,30 +36,71 @@ function CreativeTemplate({ sections, colors }) {
   return (
     <div style={s.page}>
       {/* Header */}
-      <div style={s.sectionGap}>
+      <div style={s.header}>
         <h1 style={s.name}>{personalInfo.fullName || 'Your Full Name'}</h1>
         <div style={s.gradientBar} />
-        <div style={s.contactRow}>
-          {personalInfo.email && (
-            <span style={s.contactItem}><HiEnvelope style={s.contactIcon} />{personalInfo.email}</span>
-          )}
-          {personalInfo.phone && (
-            <span style={s.contactItem}><HiPhone style={s.contactIcon} />{personalInfo.phone}</span>
-          )}
-          {personalInfo.location && (
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) && (
+          <div style={s.contactLine}>
+            {personalInfo.email && (
+              <span style={s.contactItem}><HiEnvelope style={s.contactIcon} />{personalInfo.email}</span>
+            )}
+            {personalInfo.email && personalInfo.phone && <span style={s.divider}>•</span>}
+            {personalInfo.phone && (
+              <span style={s.contactItem}><HiPhone style={s.contactIcon} />{personalInfo.phone}</span>
+            )}
+          </div>
+        )}
+
+        {/* Line 2: Location */}
+        {personalInfo.location && (
+          <div style={s.contactLine}>
             <span style={s.contactItem}><HiMapPin style={s.contactIcon} />{personalInfo.location}</span>
-          )}
-          {personalInfo.linkedIn && (
-            <a href={personalInfo.linkedIn} style={{ ...s.contactItem, color: colors.accent, textDecoration: 'underline' }}>
-              <HiLink style={s.contactIcon} />LinkedIn
-            </a>
-          )}
-          {personalInfo.portfolio && (
-            <a href={personalInfo.portfolio} style={{ ...s.contactItem, color: colors.accent, textDecoration: 'underline' }}>
-              <HiGlobeAlt style={s.contactIcon} />Portfolio
-            </a>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) && (
+          <div style={s.contactLine}>
+            {personalInfo.linkedIn && (
+              <a
+                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ ...s.contactItem, color: colors.accent, textDecoration: 'underline' }}
+              >
+                <HiLink style={s.contactIcon} />LinkedIn
+              </a>
+            )}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) && (
+              <span style={s.divider}>•</span>
+            )}
+            {personalInfo.github && (
+              <a
+                href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ ...s.contactItem, color: colors.accent, textDecoration: 'underline' }}
+              >
+                <HiCodeBracket style={s.contactIcon} />GitHub
+              </a>
+            )}
+            {personalInfo.github && personalInfo.portfolio && (
+              <span style={s.divider}>•</span>
+            )}
+            {personalInfo.portfolio && (
+              <a
+                href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ ...s.contactItem, color: colors.accent, textDecoration: 'underline' }}
+              >
+                <HiGlobeAlt style={s.contactIcon} />Portfolio
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Summary */}

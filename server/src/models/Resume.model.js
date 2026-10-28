@@ -79,6 +79,7 @@ const resumeSchema = new mongoose.Schema(
         phone: { type: String, default: '' },
         location: { type: String, default: '' },
         linkedIn: { type: String, default: '' },
+        github: { type: String, default: '' },
         portfolio: { type: String, default: '' },
       },
       summary: { type: String, default: '' },

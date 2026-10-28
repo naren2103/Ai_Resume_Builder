@@ -35,17 +35,78 @@ const ensureStringArray = (value) => {
   return [String(value)];
 };
 
-const sanitizeParsedSections = (sections = {}) => {
+const splitTechList = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) {
+    return val.flatMap((v) => splitTechList(v));
+  }
+  if (typeof val === 'string') {
+    return val
+      .split(/[,|•/]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
+const sanitizeProjectEntry = (item) => {
+  if (!item) return null;
+  if (typeof item === 'string') {
+    const trimmed = item.trim();
+    return trimmed ? { name: trimmed, description: '', technologies: [], link: '', bullets: [] } : null;
+  }
+  if (typeof item !== 'object') return null;
+
+  const name = ensureString(
+    item.name || item.title || item.projectName || item.projectTitle || item.heading || ''
+  ).trim();
+
+  const description = ensureString(
+    item.description || item.summary || item.details || item.overview || ''
+  ).trim();
+
+  const rawTech = item.technologies || item.techStack || item.tools || item.tech || item.skills;
+  const technologies = splitTechList(rawTech);
+
+  const link = ensureString(
+    item.link || item.url || item.projectUrl || item.repo || item.github || item.demo || ''
+  ).trim();
+
+  const rawBullets = item.bullets || item.highlights || item.points || item.keyAchievements;
+  const bullets = ensureStringArray(rawBullets).map((b) => b.trim()).filter(Boolean);
+
+  if (!name && !description && bullets.length === 0 && !link) {
+    return null;
+  }
+
+  return {
+    name: name || 'Untitled Project',
+    description,
+    technologies,
+    link,
+    bullets,
+  };
+};
+
+export const sanitizeParsedSections = (sections = {}) => {
   const parsed = sections.sections || sections;
   const normalized = { ...parsed };
 
   normalized.personalInfo = normalized.personalInfo || {};
+  const linkedIn = ensureString(
+    normalized.personalInfo.linkedIn || normalized.personalInfo.linkedin || normalized.personalInfo.linkedInUrl
+  ).trim();
+  const github = ensureString(
+    normalized.personalInfo.github || normalized.personalInfo.gitHub || normalized.personalInfo.githubUrl
+  ).trim();
+
   normalized.personalInfo = {
     fullName: ensureString(normalized.personalInfo.fullName),
     email: ensureString(normalized.personalInfo.email),
     phone: ensureString(normalized.personalInfo.phone),
     location: ensureString(normalized.personalInfo.location),
-    linkedIn: ensureString(normalized.personalInfo.linkedIn),
+    linkedIn,
+    github,
     portfolio: ensureString(normalized.personalInfo.portfolio),
   };
 
@@ -74,22 +135,45 @@ const sanitizeParsedSections = (sections = {}) => {
     : [];
 
   normalized.skills = {
-    technical: ensureStringArray(normalized.skills?.technical),
-    soft: ensureStringArray(normalized.skills?.soft),
-    languages: ensureStringArray(normalized.skills?.languages),
+    technical: splitTechList(normalized.skills?.technical),
+    soft: splitTechList(normalized.skills?.soft),
+    languages: splitTechList(normalized.skills?.languages),
   };
 
-  normalized.projects = Array.isArray(normalized.projects)
-    ? normalized.projects.map((item) => ({
-        name: ensureString(item?.name),
-        description: ensureString(item?.description),
-        technologies: ensureStringArray(item?.technologies),
-        link: ensureString(item?.link),
-        bullets: ensureStringArray(item?.bullets),
-      }))
-    : typeof normalized.projects === 'string'
-    ? [{ name: ensureString(normalized.projects), description: '', technologies: [], link: '', bullets: [] }]
+  const rawProjects = Array.isArray(normalized.projects)
+    ? normalized.projects
+    : typeof normalized.projects === 'string' && normalized.projects.trim()
+    ? [normalized.projects]
     : [];
+
+  let projects = rawProjects
+    .map(sanitizeProjectEntry)
+    .filter(Boolean);
+
+  // Recovery: if Gemini mistakenly placed projects under experience
+  if (projects.length === 0 && Array.isArray(normalized.experience)) {
+    const remainingExp = [];
+    for (const exp of normalized.experience) {
+      const comp = (exp.company || '').trim();
+      const role = (exp.role || '').trim();
+      if (/^(academic |personal |key |side )?projects?$/i.test(comp)) {
+        projects.push({
+          name: role || comp,
+          description: '',
+          technologies: [],
+          link: '',
+          bullets: ensureStringArray(exp.bullets),
+        });
+      } else {
+        remainingExp.push(exp);
+      }
+    }
+    if (projects.length > 0) {
+      normalized.experience = remainingExp;
+    }
+  }
+
+  normalized.projects = projects;
 
   normalized.certifications = Array.isArray(normalized.certifications)
     ? normalized.certifications.map((item) => {
@@ -145,6 +229,11 @@ export const getResumeById = async (resumeId, userId) => {
 export const updateResume = async (resumeId, userId, updateData) => {
   if (updateData.sections) {
     updateData.sections = sanitizeSections(updateData.sections);
+    if (updateData.sections.personalInfo) {
+      updateData.sections.personalInfo = sanitizeParsedSections({
+        personalInfo: updateData.sections.personalInfo,
+      }).personalInfo;
+    }
   }
   const resume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
@@ -173,6 +262,8 @@ export const updateSection = async (resumeId, userId, sectionName, sectionData) 
 
   if (['experience', 'education', 'projects', 'certifications'].includes(sectionName)) {
     cleanData = sanitizeParsedSections({ [sectionName]: cleanData })[sectionName];
+  } else if (sectionName === 'personalInfo' && cleanData) {
+    cleanData = sanitizeParsedSections({ personalInfo: cleanData }).personalInfo;
   }
 
   const updateKey = `sections.${sectionName}`;

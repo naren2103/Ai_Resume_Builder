@@ -20,6 +20,8 @@ function ExecutiveTemplate({ sections, colors }) {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
     },
     name: {
       fontFamily: "'Playfair Display', serif",
@@ -28,17 +30,25 @@ function ExecutiveTemplate({ sections, colors }) {
       color: '#ffffff',
       margin: 0,
       letterSpacing: '0.5px',
+      textAlign: 'center',
     },
-    bannerContact: {
+    contactLine: {
       display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       flexWrap: 'wrap',
-      gap: '6px 16px',
-      marginTop: '10px',
+      marginTop: '4px',
       fontSize: '12px',
-      color: 'rgba(255, 255, 255, 0.7)',
+      color: 'rgba(255, 255, 255, 0.75)',
+      wordBreak: 'break-word',
+    },
+    divider: {
+      color: 'rgba(255, 255, 255, 0.4)',
+      margin: '0 8px',
+      userSelect: 'none',
     },
     bannerLink: {
-      color: 'rgba(255, 255, 255, 0.7)',
+      color: 'rgba(255, 255, 255, 0.85)',
       textDecoration: 'underline',
       fontSize: '12px',
     },
@@ -123,17 +133,64 @@ function ExecutiveTemplate({ sections, colors }) {
       {/* Dark Banner Header */}
       <div style={styles.banner}>
         <h1 style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</h1>
-        <div style={styles.bannerContact}>
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.linkedIn && (
-            <a href={personalInfo.linkedIn} style={styles.bannerLink}>LinkedIn</a>
-          )}
-          {personalInfo.portfolio && (
-            <a href={personalInfo.portfolio} style={styles.bannerLink}>Portfolio</a>
-          )}
-        </div>
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) && (
+          <div style={styles.contactLine}>
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.email && personalInfo.phone && <span style={styles.divider}>•</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+          </div>
+        )}
+
+        {/* Line 2: Location */}
+        {personalInfo.location && (
+          <div style={styles.contactLine}>
+            <span>{personalInfo.location}</span>
+          </div>
+        )}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) && (
+          <div style={styles.contactLine}>
+            {personalInfo.linkedIn && (
+              <a
+                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.bannerLink}
+              >
+                LinkedIn
+              </a>
+            )}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) && (
+              <span style={styles.divider}>•</span>
+            )}
+            {personalInfo.github && (
+              <a
+                href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.bannerLink}
+              >
+                GitHub
+              </a>
+            )}
+            {personalInfo.github && personalInfo.portfolio && (
+              <span style={styles.divider}>•</span>
+            )}
+            {personalInfo.portfolio && (
+              <a
+                href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.bannerLink}
+              >
+                Portfolio
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Body */}

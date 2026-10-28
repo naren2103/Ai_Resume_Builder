@@ -13,11 +13,13 @@ function CreativePdf({ sections, colors }) {
   const styles = StyleSheet.create({
     page: { padding: 40, fontFamily: 'Helvetica', color: colors.text, fontSize: 10 },
     // Header
-    name: { fontSize: 22, fontFamily: 'Helvetica-Bold', letterSpacing: -0.5 },
-    gradientBar: { width: 80, height: 4, borderRadius: 2, backgroundColor: colors.accent, marginTop: 4 },
-    contactRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 },
+    header: { alignItems: 'center', marginBottom: 10 },
+    name: { fontSize: 22, fontFamily: 'Helvetica-Bold', letterSpacing: -0.5, textAlign: 'center' },
+    gradientBar: { width: 80, height: 4, borderRadius: 2, backgroundColor: colors.accent, marginTop: 4, marginBottom: 4 },
+    contactLine: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 3 },
     contactItem: { fontSize: 8, color: '#64748b' },
     contactLink: { fontSize: 8, color: colors.accent, textDecoration: 'underline' },
+    divider: { fontSize: 8, color: '#94a3b8', marginHorizontal: 6 },
     // Summary card
     summaryCard: { backgroundColor: colors.light, borderRadius: 6, padding: 12, marginTop: 12 },
     summaryText: { fontSize: 10, lineHeight: 1.5 },
@@ -58,16 +60,46 @@ function CreativePdf({ sections, colors }) {
   return (
     <View style={styles.page}>
       {/* Header */}
-      <View>
+      <View style={styles.header}>
         <Text style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</Text>
         <View style={styles.gradientBar} />
-        <View style={styles.contactRow}>
-          {personalInfo.email && <Text style={styles.contactItem}>{personalInfo.email}</Text>}
-          {personalInfo.phone && <Text style={styles.contactItem}>{personalInfo.phone}</Text>}
-          {personalInfo.location && <Text style={styles.contactItem}>{personalInfo.location}</Text>}
-          {personalInfo.linkedIn && <Link src={personalInfo.linkedIn} style={styles.contactLink}>LinkedIn</Link>}
-          {personalInfo.portfolio && <Link src={personalInfo.portfolio} style={styles.contactLink}>Portfolio</Link>}
-        </View>
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.email ? <Text style={styles.contactItem}>{personalInfo.email}</Text> : null}
+            {personalInfo.email && personalInfo.phone ? <Text style={styles.divider}>•</Text> : null}
+            {personalInfo.phone ? <Text style={styles.contactItem}>{personalInfo.phone}</Text> : null}
+          </View>
+        ) : null}
+
+        {/* Line 2: Location */}
+        {personalInfo.location ? (
+          <View style={styles.contactLine}>
+            <Text style={styles.contactItem}>{personalInfo.location}</Text>
+          </View>
+        ) : null}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.linkedIn ? (
+              <Link src={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} style={styles.contactLink}>LinkedIn</Link>
+            ) : null}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) ? (
+              <Text style={styles.divider}>•</Text>
+            ) : null}
+            {personalInfo.github ? (
+              <Link src={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`} style={styles.contactLink}>GitHub</Link>
+            ) : null}
+            {personalInfo.github && personalInfo.portfolio ? (
+              <Text style={styles.divider}>•</Text>
+            ) : null}
+            {personalInfo.portfolio ? (
+              <Link src={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} style={styles.contactLink}>Portfolio</Link>
+            ) : null}
+          </View>
+        ) : null}
       </View>
 
       {/* Summary */}

@@ -22,9 +22,21 @@ const checkFormatting = (sections) => {
   results.sectionCompleteness = Math.round((filled / Object.keys(checks).length) * 100);
 
   const personal = sections.personalInfo || {};
-  const contactFields = ['fullName', 'email', 'phone', 'location', 'linkedIn'];
-  const contactFilled = contactFields.filter((f) => (personal[f] || '').trim()).length;
-  results.contactInfo = Math.round((contactFilled / contactFields.length) * 100);
+  const hasName = Boolean((personal.fullName || '').trim());
+  const hasEmail = Boolean((personal.email || '').trim());
+  const hasPhone = Boolean((personal.phone || '').trim());
+  const hasLocation = Boolean((personal.location || '').trim());
+  const hasLinkedIn = Boolean((personal.linkedIn || '').trim());
+  const hasGitHub = Boolean((personal.github || '').trim());
+  const hasProfileLink = hasLinkedIn || hasGitHub;
+
+  let contactScore = 0;
+  if (hasName) contactScore += 30;
+  if (hasEmail) contactScore += 35;
+  if (hasPhone) contactScore += 20;
+  if (hasLocation || hasProfileLink) contactScore += 15;
+
+  results.contactInfo = Math.min(100, contactScore);
 
   const allBullets = [
     ...(sections.experience || []).flatMap((e) => e.bullets || []),

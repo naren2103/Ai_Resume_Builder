@@ -16,25 +16,28 @@ function ModernPdf({ sections, colors }) {
   };
 
   const styles = StyleSheet.create({
-    container: { flexDirection: 'row', fontFamily: 'Helvetica', fontSize: 10, color: colors.text, minHeight: '100%' },
+    container: { flexDirection: 'column', fontFamily: 'Helvetica', fontSize: 10, color: colors.text, minHeight: '100%' },
+    header: { padding: '24 36 14', alignItems: 'center', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' },
+    name: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: colors.primary, letterSpacing: -0.5, textAlign: 'center' },
+    contactLine: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 3 },
+    contactText: { fontSize: 8.5, color: '#64748b' },
+    dividerDot: { fontSize: 8.5, color: '#cbd5e1', marginHorizontal: 5 },
+    link: { fontSize: 8.5, color: colors.accent, textDecoration: 'underline' },
+    bodyRow: { flexDirection: 'row', flex: 1 },
     // Left sidebar
-    sidebar: { width: '35%', backgroundColor: colors.primary, padding: 20, color: '#ffffff' },
+    sidebar: { width: '35%', backgroundColor: colors.primary, padding: 18, color: '#ffffff' },
     avatar: {
-      width: 64, height: 64, borderRadius: 32, backgroundColor: colors.accent,
-      alignSelf: 'center', justifyContent: 'center', alignItems: 'center', marginBottom: 16,
+      width: 56, height: 56, borderRadius: 28, backgroundColor: colors.accent,
+      alignSelf: 'center', justifyContent: 'center', alignItems: 'center', marginBottom: 14,
       borderWidth: 2, borderColor: 'rgba(255,255,255,0.3)',
     },
-    initials: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: '#ffffff' },
+    initials: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: '#ffffff' },
     sidebarLabel: { fontSize: 8, fontFamily: 'Helvetica-Bold', textTransform: 'uppercase', letterSpacing: 2, opacity: 0.7, marginBottom: 6 },
     sidebarSection: { marginBottom: 14 },
-    contactItem: { flexDirection: 'row', marginBottom: 4 },
-    contactText: { fontSize: 8, color: '#ffffff' },
     pill: { fontSize: 7, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', marginRight: 4, marginBottom: 4 },
     pillOutline: { fontSize: 7, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', color: '#ffffff', marginRight: 4, marginBottom: 4 },
     // Right content
-    content: { width: '65%', padding: 24, backgroundColor: '#ffffff' },
-    name: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: colors.primary },
-    role: { fontSize: 10, color: colors.accent, marginTop: 2 },
+    content: { width: '65%', padding: 20, backgroundColor: '#ffffff' },
     sectionTitle: { fontSize: 8, fontFamily: 'Helvetica-Bold', textTransform: 'uppercase', letterSpacing: 2, color: colors.accent, marginBottom: 6 },
     section: { marginBottom: 12 },
     row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
@@ -46,47 +49,60 @@ function ModernPdf({ sections, colors }) {
     bulletDot: { width: 8, fontSize: 10 },
     bulletText: { flex: 1, fontSize: 10, lineHeight: 1.5, color: '#475569' },
     techPill: { fontSize: 7, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, backgroundColor: colors.light, color: colors.accent, marginRight: 3, marginBottom: 3 },
-    link: { fontSize: 8, color: colors.accent, textDecoration: 'underline' },
   });
 
   return (
     <View style={styles.container}>
-      {/* Left Sidebar */}
-      <View style={styles.sidebar}>
-        {/* Avatar */}
-        <View style={styles.avatar}>
-          <Text style={styles.initials}>{getInitials(personalInfo.fullName)}</Text>
-        </View>
+      {/* Centered Top Header */}
+      <View style={styles.header}>
+        <Text style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</Text>
 
-        {/* Contact */}
-        <View style={styles.sidebarSection}>
-          <Text style={styles.sidebarLabel}>Contact</Text>
-          {personalInfo.email && (
-            <View style={styles.contactItem}>
-              <Text style={styles.contactText}>{personalInfo.email}</Text>
-            </View>
-          )}
-          {personalInfo.phone && (
-            <View style={styles.contactItem}>
-              <Text style={styles.contactText}>{personalInfo.phone}</Text>
-            </View>
-          )}
-          {personalInfo.location && (
-            <View style={styles.contactItem}>
-              <Text style={styles.contactText}>{personalInfo.location}</Text>
-            </View>
-          )}
-          {personalInfo.linkedIn && (
-            <View style={styles.contactItem}>
-              <Link src={personalInfo.linkedIn} style={[styles.contactText, { textDecoration: 'underline' }]}>LinkedIn</Link>
-            </View>
-          )}
-          {personalInfo.portfolio && (
-            <View style={styles.contactItem}>
-              <Link src={personalInfo.portfolio} style={[styles.contactText, { textDecoration: 'underline' }]}>Portfolio</Link>
-            </View>
-          )}
-        </View>
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.email ? <Text style={styles.contactText}>{personalInfo.email}</Text> : null}
+            {personalInfo.email && personalInfo.phone ? <Text style={styles.dividerDot}>•</Text> : null}
+            {personalInfo.phone ? <Text style={styles.contactText}>{personalInfo.phone}</Text> : null}
+          </View>
+        ) : null}
+
+        {/* Line 2: Location */}
+        {personalInfo.location ? (
+          <View style={styles.contactLine}>
+            <Text style={styles.contactText}>{personalInfo.location}</Text>
+          </View>
+        ) : null}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.linkedIn ? (
+              <Link src={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} style={styles.link}>LinkedIn</Link>
+            ) : null}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) ? (
+              <Text style={styles.dividerDot}>•</Text>
+            ) : null}
+            {personalInfo.github ? (
+              <Link src={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`} style={styles.link}>GitHub</Link>
+            ) : null}
+            {personalInfo.github && personalInfo.portfolio ? (
+              <Text style={styles.dividerDot}>•</Text>
+            ) : null}
+            {personalInfo.portfolio ? (
+              <Link src={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} style={styles.link}>Portfolio</Link>
+            ) : null}
+          </View>
+        ) : null}
+      </View>
+
+      {/* Two Column Body */}
+      <View style={styles.bodyRow}>
+        {/* Left Sidebar */}
+        <View style={styles.sidebar}>
+          {/* Avatar */}
+          <View style={styles.avatar}>
+            <Text style={styles.initials}>{getInitials(personalInfo.fullName)}</Text>
+          </View>
 
         {/* Skills */}
         {(skills.technical.length > 0 || skills.soft.length > 0) && (
@@ -130,12 +146,6 @@ function ModernPdf({ sections, colors }) {
 
       {/* Right Content */}
       <View style={styles.content}>
-        {/* Name */}
-        <View style={{ marginBottom: 12 }}>
-          <Text style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</Text>
-          <Text style={styles.role}>{sections.targetRole || 'Professional Title'}</Text>
-        </View>
-
         {/* Summary */}
         {summary ? (
           <View style={styles.section}>
@@ -219,6 +229,7 @@ function ModernPdf({ sections, colors }) {
             ))}
           </View>
         )}
+      </View>
       </View>
     </View>
   );

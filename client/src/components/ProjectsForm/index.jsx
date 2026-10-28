@@ -46,15 +46,17 @@ function ProjectsForm() {
       const value = (techInputs[index] || '').trim();
       if (!value) return;
       const proj = projects[index];
-      if (proj.technologies.includes(value)) return;
-      updateEntry(index, 'technologies', [...proj.technologies, value]);
+      const currentTech = Array.isArray(proj.technologies) ? proj.technologies : [];
+      if (currentTech.includes(value)) return;
+      updateEntry(index, 'technologies', [...currentTech, value]);
       setTechInputs((prev) => ({ ...prev, [index]: '' }));
     }
   };
 
   const removeTech = (projIndex, techIndex) => {
     const proj = projects[projIndex];
-    const updated = proj.technologies.filter((_, i) => i !== techIndex);
+    const currentTech = Array.isArray(proj.technologies) ? proj.technologies : [];
+    const updated = currentTech.filter((_, i) => i !== techIndex);
     updateEntry(projIndex, 'technologies', updated);
   };
 
@@ -70,7 +72,7 @@ function ProjectsForm() {
 
       {projects.map((proj, index) => (
         <div
-          key={proj._id}
+          key={proj._id || index}
           className="card card-sm card-purple-top mb-md"
         >
           <div className="flex-between mb-sm">
@@ -90,7 +92,7 @@ function ProjectsForm() {
               <label className="label-text">Project Name</label>
               <input
                 type="text"
-                value={proj.name}
+                value={proj.name || ''}
                 onChange={(e) => updateEntry(index, 'name', e.target.value)}
                 className="input-field"
                 placeholder="Project name"
@@ -100,7 +102,7 @@ function ProjectsForm() {
               <label className="label-text">Link</label>
               <input
                 type="url"
-                value={proj.link}
+                value={proj.link || ''}
                 onChange={(e) => updateEntry(index, 'link', e.target.value)}
                 className="input-field"
                 placeholder="https://..."
@@ -111,7 +113,7 @@ function ProjectsForm() {
           <div className="form-group">
             <label className="label-text">Description</label>
             <textarea
-              value={proj.description}
+              value={proj.description || ''}
               onChange={(e) => updateEntry(index, 'description', e.target.value)}
               rows={2}
               className="textarea-field"

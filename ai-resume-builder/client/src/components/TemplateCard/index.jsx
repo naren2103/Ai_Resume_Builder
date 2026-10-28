@@ -14,7 +14,7 @@ import MinimalTemplate from '../templates/MinimalTemplate.jsx';
 import ExecutiveTemplate from '../templates/ExecutiveTemplate.jsx';
 
 const SAMPLE_DATA = {
-  personalInfo: { fullName: 'Alex Johnson', email: 'alex.johnson@email.com', phone: '(555) 123-4567', location: 'San Francisco, CA', linkedIn: 'linkedin.com/in/alexjohnson', portfolio: 'alexjohnson.dev' },
+  personalInfo: { fullName: 'Alex Johnson', email: 'alex.johnson@email.com', phone: '(555) 123-4567', location: 'San Francisco, CA', linkedIn: 'https://www.linkedin.com/in/alexjohnson', github: 'https://github.com/alexjohnson', portfolio: 'https://alexjohnson.dev' },
   summary: 'Results-driven software engineer with 5+ years of experience building scalable web applications. Expert in React, Node.js, and cloud architecture. Led teams of 8+ engineers and delivered products serving 1M+ users.',
   experience: [
     { company: 'Tech Corp', role: 'Senior Software Engineer', startDate: '2021-01', endDate: '', current: true, bullets: ['Led development of microservices architecture serving 1M+ daily active users, reducing latency by 40%', 'Mentored 5 junior developers and established code review practices that reduced bug rate by 35%', 'Architected real-time data pipeline processing 10M+ events daily using Kafka and Redis'] },

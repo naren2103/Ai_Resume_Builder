@@ -2,7 +2,7 @@
 // ModernTemplate.jsx - Modern Tech Resume
 // ============================================
 
-import { HiEnvelope, HiPhone, HiMapPin, HiLink, HiGlobeAlt } from 'react-icons/hi2';
+import { HiEnvelope, HiPhone, HiMapPin, HiLink, HiCodeBracket, HiGlobeAlt } from 'react-icons/hi2';
 
 function ModernTemplate({ sections, colors }) {
   const { personalInfo, summary, experience, education, skills, projects, certifications } = sections;
@@ -13,18 +13,19 @@ function ModernTemplate({ sections, colors }) {
   };
 
   const s = {
-    page: { fontFamily: "'Inter', sans-serif", color: colors.text, display: 'flex', minHeight: '100%' },
-    sidebar: { width: '35%', padding: '32px 24px', color: '#ffffff', backgroundColor: colors.primary },
-    main: { width: '65%', padding: '32px 28px', backgroundColor: '#ffffff' },
-    avatar: { width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 700, backgroundColor: colors.accent, border: '3px solid rgba(255,255,255,0.3)', margin: '0 auto 20px' },
+    page: { fontFamily: "'Inter', sans-serif", color: colors.text, display: 'flex', flexDirection: 'column', minHeight: '100%' },
+    header: { padding: '36px 36px 20px', textAlign: 'center', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' },
+    name: { fontSize: '28px', fontWeight: 800, color: colors.primary, letterSpacing: '-0.5px', margin: 0, textAlign: 'center' },
+    contactLine: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: '4px', fontSize: '12px', color: '#64748b', wordBreak: 'break-word' },
+    divider: { color: '#cbd5e1', margin: '0 8px', userSelect: 'none' },
+    link: { color: colors.accent, textDecoration: 'underline', fontSize: '12px' },
+    bodyContainer: { display: 'flex', flex: 1 },
+    sidebar: { width: '35%', padding: '28px 24px', color: '#ffffff', backgroundColor: colors.primary },
+    main: { width: '65%', padding: '28px 28px', backgroundColor: '#ffffff' },
+    avatar: { width: '72px', height: '72px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', fontWeight: 700, backgroundColor: colors.accent, border: '3px solid rgba(255,255,255,0.3)', margin: '0 auto 20px' },
     sidebarHeading: { fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.7, marginBottom: '10px' },
-    contactItem: { display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '10px' },
-    contactIcon: { fontSize: '14px', marginTop: '2px', flexShrink: 0, opacity: 0.7 },
-    contactText: { fontSize: '12px', wordBreak: 'break-all' },
     skillPill: { fontSize: '11px', padding: '3px 10px', borderRadius: '20px', backgroundColor: 'rgba(255,255,255,0.15)', display: 'inline-block', margin: '2px' },
     skillPillOutline: { fontSize: '11px', padding: '3px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.3)', display: 'inline-block', margin: '2px' },
-    mainName: { fontSize: '24px', fontWeight: 700, color: colors.primary, margin: 0 },
-    mainRole: { fontSize: '13px', color: colors.accent, marginTop: '4px' },
     mainSectionTitle: { fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: colors.accent, marginBottom: '10px' },
     entryRole: { fontSize: '14px', fontWeight: 600, color: colors.primary },
     entryCompany: { fontSize: '12px', color: '#888' },
@@ -36,43 +37,74 @@ function ModernTemplate({ sections, colors }) {
 
   return (
     <div style={s.page}>
-      {/* Left Sidebar */}
-      <div style={s.sidebar}>
-        <div style={s.avatar}>{getInitials(personalInfo.fullName)}</div>
+      {/* Centered Top Header */}
+      <div style={s.header}>
+        <h1 style={s.name}>{personalInfo.fullName || 'Your Full Name'}</h1>
 
-        <div style={s.sidebarSection}>
-          <h3 style={s.sidebarHeading}>Contact</h3>
-          {personalInfo.email && (
-            <div style={s.contactItem}>
-              <HiEnvelope style={s.contactIcon} />
-              <span style={s.contactText}>{personalInfo.email}</span>
-            </div>
-          )}
-          {personalInfo.phone && (
-            <div style={s.contactItem}>
-              <HiPhone style={s.contactIcon} />
-              <span style={s.contactText}>{personalInfo.phone}</span>
-            </div>
-          )}
-          {personalInfo.location && (
-            <div style={s.contactItem}>
-              <HiMapPin style={s.contactIcon} />
-              <span style={s.contactText}>{personalInfo.location}</span>
-            </div>
-          )}
-          {personalInfo.linkedIn && (
-            <div style={s.contactItem}>
-              <HiLink style={s.contactIcon} />
-              <a href={personalInfo.linkedIn} style={{ ...s.contactText, textDecoration: 'underline', color: '#fff' }}>LinkedIn</a>
-            </div>
-          )}
-          {personalInfo.portfolio && (
-            <div style={s.contactItem}>
-              <HiGlobeAlt style={s.contactIcon} />
-              <a href={personalInfo.portfolio} style={{ ...s.contactText, textDecoration: 'underline', color: '#fff' }}>Portfolio</a>
-            </div>
-          )}
-        </div>
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) && (
+          <div style={s.contactLine}>
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.email && personalInfo.phone && <span style={s.divider}>•</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+          </div>
+        )}
+
+        {/* Line 2: Location */}
+        {personalInfo.location && (
+          <div style={s.contactLine}>
+            <span>{personalInfo.location}</span>
+          </div>
+        )}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) && (
+          <div style={s.contactLine}>
+            {personalInfo.linkedIn && (
+              <a
+                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={s.link}
+              >
+                LinkedIn
+              </a>
+            )}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) && (
+              <span style={s.divider}>•</span>
+            )}
+            {personalInfo.github && (
+              <a
+                href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={s.link}
+              >
+                GitHub
+              </a>
+            )}
+            {personalInfo.github && personalInfo.portfolio && (
+              <span style={s.divider}>•</span>
+            )}
+            {personalInfo.portfolio && (
+              <a
+                href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={s.link}
+              >
+                Portfolio
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Two Column Body */}
+      <div style={s.bodyContainer}>
+        {/* Left Sidebar */}
+        <div style={s.sidebar}>
+          <div style={s.avatar}>{getInitials(personalInfo.fullName)}</div>
 
         {(skills.technical.length > 0 || skills.soft.length > 0) && (
           <div style={s.sidebarSection}>
@@ -113,11 +145,6 @@ function ModernTemplate({ sections, colors }) {
 
       {/* Right Content */}
       <div style={s.main}>
-        <div style={s.sectionGap}>
-          <h1 style={s.mainName}>{personalInfo.fullName || 'Your Full Name'}</h1>
-          <p style={s.mainRole}>Professional Title</p>
-        </div>
-
         {summary && (
           <div style={s.sectionGap}>
             <h2 style={s.mainSectionTitle}>About</h2>
@@ -199,6 +226,7 @@ function ModernTemplate({ sections, colors }) {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

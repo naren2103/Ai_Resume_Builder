@@ -11,6 +11,7 @@ Parse the resume and extract ALL information into this EXACT JSON format:
     "phone": "",
     "location": "",
     "linkedIn": "",
+    "github": "",
     "portfolio": ""
   },
   "summary": "professional summary text if present",
@@ -39,11 +40,45 @@ Parse the resume and extract ALL information into this EXACT JSON format:
     "soft": ["skill1"],
     "languages": ["English"]
   },
-  "projects": [],
-  "certifications": []
+  "projects": [
+    {
+      "name": "Project Name or Title",
+      "description": "Concise summary of the project",
+      "technologies": ["Technology 1", "Technology 2"],
+      "link": "https://... or empty string if none",
+      "bullets": [
+        "Key achievement, feature built, or implementation detail 1",
+        "Key achievement, feature built, or implementation detail 2"
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Certification Name",
+      "issuer": "Issuing Organization",
+      "date": "YYYY-MM format",
+      "link": ""
+    }
+  ]
 }
 
-Extract EVERYTHING you can find. Convert dates to YYYY-MM format. If information is missing, leave as empty string or empty array. Respond ONLY with valid JSON.`;
+EXTRACTION RULES:
+1. PROJECTS:
+- Carefully locate project sections under headings such as "Projects", "Academic Projects", "Personal Projects", "Key Projects", "Featured Projects", "Selected Projects", "Technical Projects", "Coursework Projects", or similar.
+- Extract EVERY project into the "projects" array.
+- For each project:
+  - "name": The project title/name (e.g., "AI Resume Builder", "E-Commerce Microservices").
+  - "description": A concise summary of the project's purpose and scope. If dates are mentioned (e.g., "Jan 2024 - Present"), you may include them in the description.
+  - "technologies": An array of technologies, languages, frameworks, or tools used in the project.
+  - "link": Project repository URL, live demo, or website URL if present (leave empty string if none).
+  - "bullets": An array of bullet points, numbered items, or key accomplishments describing the project.
+- Do NOT mistake projects for work experience. Corporate employment roles belong in "experience"; academic, personal, or open-source projects belong in "projects".
+- Support projects written as headings followed by bullet points, numbered lists, or descriptive paragraphs.
+- Preserve all projects and their original order in the resume.
+- If no projects exist in the resume, return an empty array [].
+2. PERSONAL INFO: Extract LinkedIn profile URL into "linkedIn" and GitHub profile URL into "github". If a URL is not present in the resume text or links, leave it as an empty string ("").
+3. ACCURACY: Do NOT invent, guess, or hallucinate project names, technologies, descriptions, dates, or URLs. Only extract what is present in the resume text.
+4. FORMAT: Convert dates to YYYY-MM format. If information is missing, leave as empty string or empty array. Respond ONLY with valid JSON.`;
 export const bulletWriterPrompt = (data) => `You are an expert resume writer specializing in STAR-method bullet points.
 
 CONTEXT:

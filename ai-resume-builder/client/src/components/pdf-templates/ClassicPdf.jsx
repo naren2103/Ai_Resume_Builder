@@ -12,10 +12,11 @@ function ClassicPdf({ sections, colors }) {
 
   const styles = StyleSheet.create({
     page: { padding: 40, fontFamily: 'Times-Roman', color: colors.text, fontSize: 10 },
-    header: { textAlign: 'center', marginBottom: 8 },
-    name: { fontSize: 20, fontFamily: 'Times-Bold', color: colors.primary, letterSpacing: 1 },
-    contactRow: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', gap: 6, marginTop: 4, fontSize: 9 },
-    separator: { color: '#cbd5e1' },
+    header: { alignItems: 'center', marginBottom: 8 },
+    name: { fontSize: 20, fontFamily: 'Times-Bold', color: colors.primary, letterSpacing: 1, textAlign: 'center' },
+    contactLine: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 3 },
+    contactText: { fontSize: 9, color: '#555' },
+    divider: { fontSize: 9, color: '#94a3b8', marginHorizontal: 6 },
     hr: { borderBottom: `2px solid ${colors.primary}`, marginTop: 8, marginBottom: 10 },
     sectionTitle: {
       fontSize: 9, fontFamily: 'Times-Bold', textTransform: 'uppercase', letterSpacing: 2,
@@ -38,25 +39,43 @@ function ClassicPdf({ sections, colors }) {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</Text>
-        <View style={styles.contactRow}>
-          {personalInfo.email && <Text>{personalInfo.email}</Text>}
-          {personalInfo.email && personalInfo.phone && <Text style={styles.separator}>|</Text>}
-          {personalInfo.phone && <Text>{personalInfo.phone}</Text>}
-          {personalInfo.phone && personalInfo.location && <Text style={styles.separator}>|</Text>}
-          {personalInfo.location && <Text>{personalInfo.location}</Text>}
-          {personalInfo.linkedIn && (
-            <>
-              <Text style={styles.separator}>|</Text>
-              <Link src={personalInfo.linkedIn} style={styles.link}>LinkedIn</Link>
-            </>
-          )}
-          {personalInfo.portfolio && (
-            <>
-              <Text style={styles.separator}>|</Text>
-              <Link src={personalInfo.portfolio} style={styles.link}>Portfolio</Link>
-            </>
-          )}
-        </View>
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.email ? <Text style={styles.contactText}>{personalInfo.email}</Text> : null}
+            {personalInfo.email && personalInfo.phone ? <Text style={styles.divider}>•</Text> : null}
+            {personalInfo.phone ? <Text style={styles.contactText}>{personalInfo.phone}</Text> : null}
+          </View>
+        ) : null}
+
+        {/* Line 2: Location */}
+        {personalInfo.location ? (
+          <View style={styles.contactLine}>
+            <Text style={styles.contactText}>{personalInfo.location}</Text>
+          </View>
+        ) : null}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.linkedIn ? (
+              <Link src={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} style={styles.link}>LinkedIn</Link>
+            ) : null}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) ? (
+              <Text style={styles.divider}>•</Text>
+            ) : null}
+            {personalInfo.github ? (
+              <Link src={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`} style={styles.link}>GitHub</Link>
+            ) : null}
+            {personalInfo.github && personalInfo.portfolio ? (
+              <Text style={styles.divider}>•</Text>
+            ) : null}
+            {personalInfo.portfolio ? (
+              <Link src={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} style={styles.link}>Portfolio</Link>
+            ) : null}
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.hr} />

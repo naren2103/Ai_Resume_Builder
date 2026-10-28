@@ -12,7 +12,7 @@ const ATS_METRICS = [
   { key: 'quantification', label: 'Metrics & Numbers', weight: '10%', description: 'Bullets with quantified results' },
   { key: 'actionVerbs', label: 'Action Verbs', weight: '5%', description: 'Strong verbs leading bullets' },
   { key: 'length', label: 'Length', weight: '5%', description: 'Appropriate word count' },
-  { key: 'contactInfo', label: 'Contact Info', weight: '5%', description: 'Email, phone, LinkedIn' },
+  { key: 'contactInfo', label: 'Contact Info', weight: '5%', description: 'Email, phone, location, profile links' },
 ];
 
 export default ATS_METRICS;

@@ -132,6 +132,8 @@ export const atsScore = async (req, res, next) => {
       overall: result.overall || 0,
       breakdown: numericBreakdown,
       missingKeywords: result.missingKeywords || [],
+      presentKeywords: result.presentKeywords || [],
+      skillGaps: result.skillGaps || [],
       suggestions: result.suggestions || [],
     };
     await resume.save();

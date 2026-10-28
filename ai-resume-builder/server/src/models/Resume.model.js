@@ -79,6 +79,7 @@ const resumeSchema = new mongoose.Schema(
         phone: { type: String, default: '' },
         location: { type: String, default: '' },
         linkedIn: { type: String, default: '' },
+        github: { type: String, default: '' },
         portfolio: { type: String, default: '' },
       },
       summary: { type: String, default: '' },
@@ -96,6 +97,8 @@ const resumeSchema = new mongoose.Schema(
       overall: { type: Number, default: 0 },
       breakdown: { type: atsBreakdownSchema, default: () => ({}) },
       missingKeywords: [{ type: String }],
+      presentKeywords: [{ type: String }],
+      skillGaps: [{ type: String }],
       suggestions: [{ type: String }],
     },
     isActive: {

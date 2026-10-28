@@ -79,7 +79,7 @@ function AtsScoreCircle({ score }) {
         </svg>
         <div className="score-value">
           <span className="heading-md font-bold">{animatedScore}</span>
-          <span className="text-xs text-muted">/ 100</span>
+          <span className="text-xs font-bold text-muted">/ 100</span>
         </div>
       </div>
       <span className="score-label" style={{ backgroundColor: `${getColor()}20`, color: getColor() }}>

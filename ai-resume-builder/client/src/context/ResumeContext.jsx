@@ -18,7 +18,7 @@ const initialResume = {
   sections: {
     personalInfo: {
       fullName: '', email: '', phone: '',
-      location: '', linkedIn: '', portfolio: '',
+      location: '', linkedIn: '', github: '', portfolio: '',
     },
     summary: '',
     experience: [],
@@ -61,6 +61,30 @@ function ResumeProvider({ children }) {
   };
 
   const loadResume = (resumeData) => {
+    if (resumeData && resumeData.sections) {
+      resumeData.sections.personalInfo = {
+        fullName: '',
+        email: '',
+        phone: '',
+        location: '',
+        linkedIn: '',
+        github: '',
+        portfolio: '',
+        ...resumeData.sections.personalInfo,
+      };
+      resumeData.sections.projects = Array.isArray(resumeData.sections.projects)
+        ? resumeData.sections.projects
+        : [];
+      resumeData.sections.experience = Array.isArray(resumeData.sections.experience)
+        ? resumeData.sections.experience
+        : [];
+      resumeData.sections.education = Array.isArray(resumeData.sections.education)
+        ? resumeData.sections.education
+        : [];
+      resumeData.sections.certifications = Array.isArray(resumeData.sections.certifications)
+        ? resumeData.sections.certifications
+        : [];
+    }
     setResume(resumeData);
     setHasChanges(false);
   };

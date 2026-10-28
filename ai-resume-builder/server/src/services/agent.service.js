@@ -33,7 +33,7 @@ CONVERSATION RULES:
 6. When using update_resume_section for experience, pass sectionData as an array of objects with: company, role, startDate, endDate, current, bullets
 7. When using update_resume_section for education, pass sectionData as an array of objects with: institution, degree, field, startDate, endDate, gpa
 8. When using update_resume_section for skills, pass sectionData as an object with: technical (array), soft (array), languages (array)
-9. When using update_resume_section for personalInfo, pass sectionData as an object with: fullName, email, phone, location, linkedIn, portfolio
+9. When using update_resume_section for personalInfo, pass sectionData as an object with: fullName, email, phone, location, linkedIn, github, portfolio
 10. When using update_resume_section for summary, pass sectionData as a string (the summary text)`;
 
 export const runInterviewAgent = async (data) => {

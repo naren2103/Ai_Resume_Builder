@@ -16,25 +16,36 @@ function ExecutivePdf({ sections, colors }) {
       padding: '28 40',
       minHeight: 90,
       justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
     },
     name: {
       fontSize: 20,
       fontFamily: 'Times-Bold',
       color: '#ffffff',
       letterSpacing: 0.5,
+      textAlign: 'center',
     },
-    bannerContact: {
+    contactLine: {
       flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
       flexWrap: 'wrap',
-      gap: 10,
-      marginTop: 6,
-      fontSize: 9,
-      color: 'rgba(255, 255, 255, 0.7)',
+      marginTop: 2,
+    },
+    contactText: {
+      fontSize: 8.5,
+      color: 'rgba(255, 255, 255, 0.75)',
+    },
+    dividerDot: {
+      fontSize: 8.5,
+      color: 'rgba(255, 255, 255, 0.4)',
+      marginHorizontal: 5,
     },
     bannerLink: {
-      color: 'rgba(255, 255, 255, 0.7)',
+      color: 'rgba(255, 255, 255, 0.85)',
       textDecoration: 'underline',
-      fontSize: 9,
+      fontSize: 8.5,
     },
     body: {
       padding: '28 40',
@@ -122,17 +133,43 @@ function ExecutivePdf({ sections, colors }) {
       {/* Dark Banner Header */}
       <View style={styles.banner}>
         <Text style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</Text>
-        <View style={styles.bannerContact}>
-          {personalInfo.email && <Text>{personalInfo.email}</Text>}
-          {personalInfo.phone && <Text>{personalInfo.phone}</Text>}
-          {personalInfo.location && <Text>{personalInfo.location}</Text>}
-          {personalInfo.linkedIn && (
-            <Link src={personalInfo.linkedIn} style={styles.bannerLink}>LinkedIn</Link>
-          )}
-          {personalInfo.portfolio && (
-            <Link src={personalInfo.portfolio} style={styles.bannerLink}>Portfolio</Link>
-          )}
-        </View>
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.email ? <Text style={styles.contactText}>{personalInfo.email}</Text> : null}
+            {personalInfo.email && personalInfo.phone ? <Text style={styles.dividerDot}>•</Text> : null}
+            {personalInfo.phone ? <Text style={styles.contactText}>{personalInfo.phone}</Text> : null}
+          </View>
+        ) : null}
+
+        {/* Line 2: Location */}
+        {personalInfo.location ? (
+          <View style={styles.contactLine}>
+            <Text style={styles.contactText}>{personalInfo.location}</Text>
+          </View>
+        ) : null}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) ? (
+          <View style={styles.contactLine}>
+            {personalInfo.linkedIn ? (
+              <Link src={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} style={styles.bannerLink}>LinkedIn</Link>
+            ) : null}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) ? (
+              <Text style={styles.dividerDot}>•</Text>
+            ) : null}
+            {personalInfo.github ? (
+              <Link src={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`} style={styles.bannerLink}>GitHub</Link>
+            ) : null}
+            {personalInfo.github && personalInfo.portfolio ? (
+              <Text style={styles.dividerDot}>•</Text>
+            ) : null}
+            {personalInfo.portfolio ? (
+              <Link src={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} style={styles.bannerLink}>Portfolio</Link>
+            ) : null}
+          </View>
+        ) : null}
       </View>
 
       {/* Body */}

@@ -8,8 +8,9 @@ function ClassicTemplate({ sections, colors }) {
   const styles = {
     page: { fontFamily: 'Georgia, serif', color: colors.text, padding: '40px 48px', lineHeight: 1.5 },
     name: { fontSize: '28px', fontWeight: 700, color: colors.primary, textAlign: 'center', letterSpacing: '1px', margin: 0 },
-    contactRow: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '6px 16px', marginTop: '8px', fontSize: '12px', color: '#555' },
-    separator: { color: '#ccc' },
+    header: { textAlign: 'center', marginBottom: '8px' },
+    contactLine: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: '4px', fontSize: '12px', color: '#555', wordBreak: 'break-word' },
+    divider: { color: '#94a3b8', margin: '0 8px', userSelect: 'none' },
     hr: { border: 'none', borderTop: `2px solid ${colors.primary}`, margin: '14px 0' },
     sectionTitle: { fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: colors.primary, borderBottom: `2px solid ${colors.primary}`, paddingBottom: '4px', marginBottom: '10px', marginTop: '0' },
     entryRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' },
@@ -27,27 +28,66 @@ function ClassicTemplate({ sections, colors }) {
   return (
     <div style={styles.page}>
       {/* Header */}
-      <div>
+      <div style={styles.header}>
         <h1 style={styles.name}>{personalInfo.fullName || 'Your Full Name'}</h1>
-        <div style={styles.contactRow}>
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.email && personalInfo.phone && <span style={styles.separator}>|</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.phone && personalInfo.location && <span style={styles.separator}>|</span>}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.linkedIn && (
-            <>
-              <span style={styles.separator}>|</span>
-              <a href={personalInfo.linkedIn} style={styles.link}>LinkedIn</a>
-            </>
-          )}
-          {personalInfo.portfolio && (
-            <>
-              <span style={styles.separator}>|</span>
-              <a href={personalInfo.portfolio} style={styles.link}>Portfolio</a>
-            </>
-          )}
-        </div>
+
+        {/* Line 1: Email & Phone */}
+        {(personalInfo.email || personalInfo.phone) && (
+          <div style={styles.contactLine}>
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.email && personalInfo.phone && <span style={styles.divider}>•</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+          </div>
+        )}
+
+        {/* Line 2: Location */}
+        {personalInfo.location && (
+          <div style={styles.contactLine}>
+            <span>{personalInfo.location}</span>
+          </div>
+        )}
+
+        {/* Line 3: LinkedIn & GitHub (and Portfolio) */}
+        {(personalInfo.linkedIn || personalInfo.github || personalInfo.portfolio) && (
+          <div style={styles.contactLine}>
+            {personalInfo.linkedIn && (
+              <a
+                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.link}
+              >
+                LinkedIn
+              </a>
+            )}
+            {personalInfo.linkedIn && (personalInfo.github || personalInfo.portfolio) && (
+              <span style={styles.divider}>•</span>
+            )}
+            {personalInfo.github && (
+              <a
+                href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.link}
+              >
+                GitHub
+              </a>
+            )}
+            {personalInfo.github && personalInfo.portfolio && (
+              <span style={styles.divider}>•</span>
+            )}
+            {personalInfo.portfolio && (
+              <a
+                href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.link}
+              >
+                Portfolio
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       <hr style={styles.hr} />
